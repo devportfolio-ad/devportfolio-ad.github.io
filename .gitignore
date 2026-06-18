@@ -1,0 +1,17 @@
+# Build output
+bin/
+obj/
+publish/
+release/
+
+# Rider / VS / VS Code
+.vs/
+.idea/
+*.user
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

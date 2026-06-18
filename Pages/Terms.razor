@@ -1,0 +1,147 @@
+@page "/terms"
+@inject StudioState State
+@implements IDisposable
+
+<PageTitle>Service Agreement — @AppConfig.StudioName</PageTitle>
+
+<section class="section">
+    <p class="eyebrow">Transparent by design</p>
+    <h2 class="section-title">Service agreement &amp; workflow</h2>
+    <p class="section-lead">
+        Here's exactly how we work together — milestones, payment, ownership, and revisions.
+        No surprises. Read it through, and the contact form unlocks below.
+    </p>
+
+    <!-- ============ AGREEMENT TERMS ============ -->
+    <div class="card terms-card">
+        <h3 class="terms-heading">Service Agreement Terms</h3>
+        <ul class="terms-list">
+            <li>
+                <span class="term-key neon-cyan">Milestones</span>
+                <span>@AppConfig.DepositPercent% deposit upfront to begin, @AppConfig.DepositPercent% upon delivery of the agreed build.</span>
+            </li>
+            <li>
+                <span class="term-key neon-cyan">Ownership</span>
+                <span>Full code ownership transfers to you upon final payment — it's yours, deployable anywhere.</span>
+            </li>
+            <li>
+                <span class="term-key neon-cyan">Revisions</span>
+                <span>Includes up to @AppConfig.IncludedRevisionRounds rounds of minor tweaks; larger changes are scoped separately.</span>
+            </li>
+            <li>
+                <span class="term-key neon-cyan">Deployment</span>
+                <span>I deploy the stable build to your GitHub Pages or custom domain and walk you through maintaining it.</span>
+            </li>
+            <li>
+                <span class="term-key neon-cyan">Communication</span>
+                <span>Async-friendly updates throughout, with staging links so you always see current progress.</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ============ ACKNOWLEDGMENT ============ -->
+    <label class="ack">
+        <input type="checkbox" checked="@State.TermsAccepted"
+               @onchange="OnAckChanged" />
+        <span>I have read, understood, and agree to these terms.</span>
+    </label>
+
+    <!-- ============ GATED CONTACT PANEL ============ -->
+    <div class="contact-panel card @(State.TermsAccepted ? "unlocked" : "locked")"
+         aria-hidden="@(!State.TermsAccepted)">
+        @if (!_submitted)
+        {
+            <h3>Contact me / Get started</h3>
+            <p class="contact-lead">
+                Tell me about your project. I'll reply from
+                <a href="mailto:@AppConfig.ContactEmail">@AppConfig.ContactEmail</a>.
+            </p>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="name">Your name</label>
+                    <input id="name" type="text" @bind="_name" disabled="@(!State.TermsAccepted)" placeholder="Jane Maker" />
+                </div>
+                <div class="field">
+                    <label for="email">Your email</label>
+                    <input id="email" type="email" @bind="_email" disabled="@(!State.TermsAccepted)" placeholder="you@example.com" />
+                </div>
+            </div>
+            <div class="field">
+                <label for="scope">Project scope</label>
+                <select id="scope" @bind="_scope" disabled="@(!State.TermsAccepted)">
+                    @foreach (var pkg in Catalogue.Packages)
+                    {
+                        <option value="@pkg.Name">@pkg.Name (@Money(pkg.MinPrice)–@Money(pkg.MaxPrice))</option>
+                    }
+                    <option value="Something else">Something else entirely</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="msg">Project details</label>
+                <textarea id="msg" rows="4" @bind="_message" disabled="@(!State.TermsAccepted)"
+                          placeholder="What are you dreaming up?"></textarea>
+            </div>
+
+            <div class="contact-actions">
+                <a class="btn btn-primary @(CanSubmit ? "" : "btn-disabled")"
+                   href="@MailtoLink"
+                   @onclick="MarkSubmitted">
+                    Send via email →
+                </a>
+                <span class="contact-hint">Opens your mail app, pre-filled.</span>
+            </div>
+        }
+        else
+        {
+            <div class="thanks">
+                <div class="thanks-mark neon-cyan">✓</div>
+                <h3>Your email is on its way 🐾</h3>
+                <p>Thanks, @(_name is { Length: > 0 } ? _name : "friend") — I'll be in touch soon. If your mail app didn't open,
+                   reach me directly at <a href="mailto:@AppConfig.ContactEmail">@AppConfig.ContactEmail</a>.</p>
+            </div>
+        }
+    </div>
+    @if (!State.TermsAccepted)
+    {
+        <p class="lock-hint">🔒 Check the box above to unlock the contact form.</p>
+    }
+</section>
+
+@code {
+    private string _name = "";
+    private string _email = "";
+    private string _scope = "";
+    private string _message = "";
+    private bool _submitted;
+
+    protected override void OnInitialized()
+    {
+        State.OnChange += StateHasChanged;
+        _scope = State.SelectedPackage.Name;
+    }
+    public void Dispose() => State.OnChange -= StateHasChanged;
+
+    private void OnAckChanged(ChangeEventArgs e) => State.TermsAccepted = (bool)(e.Value ?? false);
+
+    private bool CanSubmit => State.TermsAccepted && _name.Length > 0 && _email.Contains('@');
+
+    private void MarkSubmitted()
+    {
+        if (CanSubmit) _submitted = true;
+    }
+
+    private string MailtoLink
+    {
+        get
+        {
+            var subject = Uri.EscapeDataString($"New project inquiry — {_scope}");
+            var body = Uri.EscapeDataString(
+                $"Name: {_name}\nEmail: {_email}\nScope: {_scope}\n\n{_message}");
+            return $"mailto:{AppConfig.ContactEmail}?subject={subject}&body={body}";
+        }
+    }
+
+    private static string Money(decimal v) =>
+        AppConfig.CurrencySymbol + v.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+}

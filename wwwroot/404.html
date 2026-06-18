@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Cozy Code Studio</title>
+    <!--
+        GitHub Pages SPA redirect trick.
+        GitHub serves this 404.html for any unknown deep link (e.g. /uses).
+        We stash the requested URL and bounce to the app root; index.html
+        reads it back out of sessionStorage and restores the route so Blazor
+        client-side routing can take over.
+    -->
+    <script>
+        sessionStorage.redirect = location.href;
+        // Send everyone to the app's base path. Keep this in sync with <base href>.
+        location.replace('/');
+    </script>
+</head>
+<body>
+    Redirecting…
+</body>
+</html>

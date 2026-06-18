@@ -1,0 +1,112 @@
+/* Full-viewport layer that sits behind all page content. */
+.cat-layer {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;   /* the layer never intercepts clicks... */
+    z-index: 0;
+}
+
+.cat-sprite {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: center;
+    transition: transform 66ms linear;  /* smooths the ~15fps position steps */
+    opacity: 0.9;
+    pointer-events: auto;   /* ...but each cat is clickable (for petting) */
+    cursor: pointer;
+    filter: drop-shadow(0 0 10px var(--cat-glow, rgba(85, 239, 196, 0.35)));
+}
+
+.cat-svg { display: block; overflow: visible; }
+
+/* Per-cat palette: fills/strokes read CSS variables set inline per sprite,
+   so each cat can have its own colours. */
+.f-body { fill: var(--cat-body); }
+.f-ear { fill: var(--cat-ear); }
+.f-heart { fill: var(--cat-heart); }
+.cat-eye { fill: var(--cat-eye); transition: fill 0.2s ease; }
+.s-body { stroke: var(--cat-body); }
+.s-eye { stroke: var(--cat-eye); }
+.cat-zzz { fill: var(--cat-eye); }
+
+/* --- Petting: eyes glow happy + a purr heart floats up --- */
+.cat-happy .cat-eye { fill: var(--cat-heart); }
+.cat-purr {
+    position: absolute;
+    top: 0;
+    left: 24px;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--cat-heart);
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px var(--cat-heart));
+}
+.cat-happy .cat-purr { animation: purr-pop 1.3s ease-out forwards; }
+@keyframes purr-pop {
+    0%   { opacity: 0; transform: translateY(2px) scale(0.6); }
+    25%  { opacity: 1; transform: translateY(-6px) scale(1.15); }
+    100% { opacity: 0; transform: translateY(-28px) scale(1); }
+}
+
+/* --- Tail sway (always gently moving) --- */
+.cat-tail {
+    transform-origin: 22px 60px;
+    animation: tail-sway 2.4s ease-in-out infinite;
+}
+@keyframes tail-sway {
+    0%, 100% { transform: rotate(-6deg); }
+    50%      { transform: rotate(10deg); }
+}
+
+/* --- Walking: a soft vertical bob + stepping legs + faster tail --- */
+.cat-walking .cat-svg { animation: walk-bob 0.45s ease-in-out infinite; }
+.cat-walking .cat-tail { animation-duration: 1.2s; }
+.cat-walking .cat-leg-front { animation: leg-step 0.45s ease-in-out infinite; transform-origin: 57px 70px; }
+.cat-walking .cat-leg-back  { animation: leg-step 0.45s ease-in-out infinite reverse; transform-origin: 33px 70px; }
+@keyframes walk-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-1.6px); }
+}
+@keyframes leg-step {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(18deg); }
+}
+
+/* --- Grooming: a gentle head nod toward the chest (rotation only) --- */
+.cat-grooming .cat-head {
+    transform-origin: 60px 64px;
+    animation: groom-dip 1s ease-in-out infinite;
+}
+@keyframes groom-dip {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(8deg); }
+}
+
+/* --- Sitting: slow, content breathing --- */
+.cat-sitting .cat-svg { animation: breathe 3.2s ease-in-out infinite; }
+@keyframes breathe {
+    0%, 100% { transform: scaleY(1); }
+    50%      { transform: scaleY(1.03); }
+}
+
+/* --- Sleeping: tail barely moves, drifting Zzz --- */
+.cat-sleeping .cat-tail { animation: tail-sway 5s ease-in-out infinite; }
+.cat-sleeping .cat-svg { animation: breathe 3.6s ease-in-out infinite; }
+.cat-zzz { animation: zzz-drift 2.6s ease-out infinite; }
+@keyframes zzz-drift {
+    0%   { opacity: 0; transform: translate(0, 4px); }
+    30%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(6px, -10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cat-sprite { transition: none; }
+    .cat-tail, .cat-svg, .cat-head, .cat-leg, .cat-zzz, .cat-purr {
+        animation: none !important;
+    }
+}

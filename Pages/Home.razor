@@ -1,0 +1,121 @@
+@page "/"
+@inject StudioState State
+@implements IDisposable
+
+<PageTitle>@AppConfig.StudioName — Custom Web Development</PageTitle>
+
+<!-- ============ HERO ============ -->
+<section class="hero section">
+    <p class="eyebrow">Freelance Web Development</p>
+    <h1 class="hero-title">
+        Cozy spaces,<br />
+        <span class="neon-cyan">engineered</span> in <span class="neon-violet">code</span>.
+    </h1>
+    <p class="hero-sub section-lead">
+        @AppConfig.StudioName builds custom websites and web apps with the warmth of a
+        handmade thing and the precision of well-written software. Dark, glowing, and
+        unmistakably yours.
+    </p>
+    <div class="hero-actions">
+        <a class="btn btn-primary" href="uses">See what I build →</a>
+        <a class="btn btn-ghost" href="terms">How we work together</a>
+    </div>
+</section>
+
+<!-- ============ THE WHY ============ -->
+<section class="section why">
+    <p class="eyebrow">The Why</p>
+    <h2 class="section-title">A studio for interactive web spaces</h2>
+    <p class="section-lead">
+        I started @AppConfig.StudioName because the web should feel alive. Too many sites are
+        flat brochures; I'd rather engineer little worlds — pages that respond, animate, and
+        invite people to explore. Every project is hand-built (yes, there's a cat wandering
+        behind this very page), tuned for performance, and shipped on infrastructure you own.
+    </p>
+</section>
+
+<!-- ============ SERVICE OVERVIEW ============ -->
+<section class="section">
+    <p class="eyebrow">What I Build</p>
+    <h2 class="section-title">Service overview</h2>
+    <div class="value-grid">
+        <div class="card">
+            <div class="card-icon neon-cyan">◈</div>
+            <h3>Custom, not template</h3>
+            <p>Every layout is designed and coded from scratch around your goals — no drag-and-drop sameness.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon neon-violet">⚡</div>
+            <h3>Fast &amp; owned</h3>
+            <p>Built on Blazor WASM and deployed to static hosting you control. No monthly platform rent.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon neon-magenta">✦</div>
+            <h3>Interactive by default</h3>
+            <p>Animation, motion, and playful detail baked in — your site should feel like an experience.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============ PRICE CALCULATOR ============ -->
+<section class="section">
+    <p class="eyebrow">Estimate</p>
+    <h2 class="section-title">Interactive price calculator</h2>
+    <p class="section-lead">
+        Pricing is transparent: a flat hourly rate of
+        <strong class="neon-cyan">@Money(AppConfig.HourlyRate)/hr</strong>, multiplied by the
+        typical hours a project scope takes. Pick a scope to see the range.
+    </p>
+
+    <div class="calc glass">
+        <div class="calc-controls">
+            <label for="scope">Project scope</label>
+            <div class="scope-options" id="scope" role="radiogroup">
+                @foreach (var pkg in Catalogue.Packages)
+                {
+                    <button type="button"
+                            class="scope-chip @(IsSelected(pkg) ? "active" : "")"
+                            role="radio"
+                            aria-checked="@IsSelected(pkg)"
+                            @onclick="() => Select(pkg)">
+                        @pkg.Name
+                    </button>
+                }
+            </div>
+
+            <div class="rate-row">
+                <span>Hourly rate</span>
+                <span class="rate-value neon-cyan">@Money(AppConfig.HourlyRate)</span>
+            </div>
+            <div class="rate-row">
+                <span>Typical hours</span>
+                <span class="rate-value">@State.SelectedPackage.MinHours–@State.SelectedPackage.MaxHours hrs</span>
+            </div>
+        </div>
+
+        <div class="calc-readout">
+            <p class="readout-label">Typical total</p>
+            <p class="readout-price">
+                <span class="neon-cyan">@Money(State.SelectedPackage.MinPrice)</span>
+                <span class="readout-dash">–</span>
+                <span class="neon-violet">@Money(State.SelectedPackage.MaxPrice)</span>
+            </p>
+            <p class="readout-note">@State.SelectedPackage.Description</p>
+            <a class="btn btn-primary readout-cta" href="terms">Start this project →</a>
+        </div>
+    </div>
+    <p class="calc-fineprint">
+        Estimates are ballpark ranges, not quotes — final pricing depends on scope agreed during discovery.
+    </p>
+</section>
+
+@code {
+    protected override void OnInitialized() => State.OnChange += StateHasChanged;
+    public void Dispose() => State.OnChange -= StateHasChanged;
+
+    private bool IsSelected(ScopePackage p) => State.SelectedPackage == p;
+    private void Select(ScopePackage p) => State.SelectedPackage = p;
+
+    private static string Money(decimal v) =>
+        AppConfig.CurrencySymbol + v.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+}

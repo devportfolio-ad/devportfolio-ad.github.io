@@ -1,0 +1,78 @@
+@page "/uses"
+
+<PageTitle>Use Cases &amp; Workflow — @AppConfig.StudioName</PageTitle>
+
+<!-- ============ USE CASE CARDS ============ -->
+<section class="section">
+    <p class="eyebrow">Deliverables</p>
+    <h2 class="section-title">What I can build for you</h2>
+    <p class="section-lead">
+        A few shapes a project tends to take. Each comes with an estimated range based on a
+        @Money(AppConfig.HourlyRate)/hr rate — mix, match, or invent something new.
+    </p>
+
+    <div class="uses-grid">
+        @foreach (var pkg in Catalogue.Packages)
+        {
+            <article class="card use-card">
+                <h3>@pkg.Name</h3>
+                <p class="use-case">@pkg.PrimaryUseCase</p>
+                <p class="use-desc">@pkg.Description</p>
+                <div class="price-tag">
+                    <span class="neon-cyan">@Money(pkg.MinPrice)</span>
+                    <span class="readout-dash">–</span>
+                    <span class="neon-violet">@Money(pkg.MaxPrice)</span>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<!-- ============ STAGGERED WORKFLOW TIMELINE ============ -->
+<section class="section">
+    <p class="eyebrow">Organic Workflow</p>
+    <h2 class="section-title">How a project flows</h2>
+    <p class="section-lead">
+        No rigid checklist — a path that guides the eye down the screen, with a trail of paw
+        prints between each phase.
+    </p>
+
+    <div class="timeline">
+        @{
+            var i = 0;
+        }
+        @foreach (var phase in Phases)
+        {
+            var side = (i % 2 == 0) ? "left" : "right";
+            <div class="phase phase-@side">
+                <div class="card phase-card">
+                    <span class="phase-num">Phase @(i + 1)</span>
+                    <h3>@phase.Title</h3>
+                    <p>@phase.Detail</p>
+                </div>
+                @if (i < Phases.Length - 1)
+                {
+                    <div class="paw-trail" aria-hidden="true">
+                        <span>🐾</span><span>🐾</span><span>🐾</span>
+                    </div>
+                }
+            </div>
+            i++;
+        }
+    </div>
+</section>
+
+@code {
+    private record Phase(string Title, string Detail);
+
+    private readonly Phase[] Phases =
+    {
+        new("Discovery & Scope", "We align on features, goals, and layout ideas so the project has a clear blueprint before any code is written."),
+        new("Interactive Prototype", "You review a mock design and clickable flow first — we lock the look and feel before committing to development."),
+        new("Active Development", "I build the application in Blazor WASM with live staging access, so you can watch it come together in real time."),
+        new("Final Polish & Launch", "We tighten the details and deploy the stable build straight to GitHub Pages or your custom domain."),
+    };
+
+    private static string Money(decimal v) =>
+        AppConfig.CurrencySymbol + v.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+}

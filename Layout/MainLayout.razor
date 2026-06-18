@@ -1,0 +1,16 @@
+@inherits LayoutComponentBase
+
+@* The cat wanders behind everything, on its own fixed layer. *@
+<CatCompanion />
+
+<div class="app-shell">
+    <NavMenu />
+
+    <main class="app-main">
+        @Body
+    </main>
+
+    <footer class="app-footer">
+        © @DateTime.Now.Year @AppConfig.StudioName · @AppConfig.Tagline
+    </footer>
+</div>

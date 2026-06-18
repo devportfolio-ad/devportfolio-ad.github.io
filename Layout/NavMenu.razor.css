@@ -1,0 +1,2 @@
+/* Nav styling lives in the global theme (wwwroot/css/app.css): .topnav,
+   .brand, .nav-link. NavLink's active state maps to our .nav-link.active. */

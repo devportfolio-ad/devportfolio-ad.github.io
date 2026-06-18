@@ -1,0 +1,86 @@
+.terms-card { margin-top: 24px; }
+.terms-heading {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-primary);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-soft);
+}
+.terms-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.terms-list li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: baseline; }
+.term-key {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.terms-list li span:last-child { color: var(--text-secondary); }
+
+/* Acknowledgment checkbox */
+.ack {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 20px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+.ack input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--neon-cyan);
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+/* Gated contact panel */
+.contact-panel {
+    transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease;
+}
+.contact-panel.locked {
+    opacity: 0.4;
+    filter: grayscale(0.8) blur(1px);
+    transform: translateY(8px);
+    pointer-events: none;
+    user-select: none;
+}
+.contact-panel.unlocked {
+    opacity: 1;
+    filter: none;
+    transform: translateY(0);
+    box-shadow: 0 0 50px rgba(0, 245, 212, 0.12);
+    border-color: var(--border-glow);
+}
+.contact-panel h3 { margin: 0 0 6px; }
+.contact-lead { color: var(--text-secondary); margin: 0 0 20px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; margin-bottom: 6px; font-size: 0.9rem; }
+
+.contact-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.contact-hint { color: var(--text-dim); font-size: 0.85rem; }
+.btn-disabled { opacity: 0.45; pointer-events: none; box-shadow: none; }
+
+.lock-hint { text-align: center; color: var(--text-dim); margin-top: 16px; }
+
+/* Thank-you state */
+.thanks { text-align: center; padding: 20px 0; }
+.thanks-mark {
+    font-size: 3rem;
+    font-weight: 900;
+    text-shadow: 0 0 24px rgba(0, 245, 212, 0.6);
+}
+.thanks h3 { margin: 8px 0; }
+.thanks p { color: var(--text-secondary); max-width: 46ch; margin: 0 auto; }
+
+@media (max-width: 640px) {
+    .terms-list li { grid-template-columns: 1fr; gap: 2px; }
+    .form-grid { grid-template-columns: 1fr; }
+}
