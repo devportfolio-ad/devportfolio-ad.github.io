@@ -1,4 +1,6 @@
 @inherits LayoutComponentBase
+@inject IJSRuntime JS
+@implements IAsyncDisposable
 
 @* The cat wanders behind everything, on its own fixed layer. *@
 <CatCompanion />
@@ -14,3 +16,28 @@
         © @DateTime.Now.Year @AppConfig.StudioName · @AppConfig.Tagline
     </footer>
 </div>
+
+@code {
+    private IJSObjectReference? _reveal;
+
+    // Runs after every render (incl. SPA navigation) so newly-rendered
+    // .reveal elements get observed.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            _reveal ??= await JS.InvokeAsync<IJSObjectReference>("import", "./js/reveal.js");
+            await _reveal.InvokeVoidAsync("init");
+        }
+        catch (JSDisconnectedException) { /* navigating away / unloading */ }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (_reveal is not null) await _reveal.DisposeAsync();
+        }
+        catch (JSDisconnectedException) { }
+    }
+}

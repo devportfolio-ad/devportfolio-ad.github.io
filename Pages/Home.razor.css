@@ -8,6 +8,51 @@
 .hero-sub { font-size: 1.2rem; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
 
+/* The Why — heightened, editorial prose */
+.why .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    max-width: 22ch;
+}
+.why-prose {
+    position: relative;
+    max-width: 68ch;
+    margin-top: 22px;
+    padding-left: 26px;
+}
+/* Neon accent bar running down the passage */
+.why-prose::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--neon-cyan), var(--neon-violet) 60%, transparent);
+    box-shadow: 0 0 14px rgba(0, 245, 212, 0.4);
+}
+.why-prose p {
+    font-size: 1.18rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin: 0 0 22px;
+}
+.why-prose p:last-child { margin-bottom: 0; }
+/* Stagger the scroll-in reveal so the paragraphs cascade */
+.why-prose p:nth-child(2) { --reveal-delay: 0.12s; }
+.why-prose p:nth-child(3) { --reveal-delay: 0.24s; }
+/* Lead-in line gets a touch more presence */
+.why-prose p:first-child {
+    font-size: 1.28rem;
+    color: var(--text-primary);
+}
+/* Bold, glowing white emphasis for the emotional beats */
+.why-emph {
+    color: var(--text-primary);
+    font-weight: 700;
+    text-shadow: 0 0 16px rgba(238, 240, 255, 0.35);
+}
+
 /* Service overview grid */
 .value-grid {
     display: grid;

@@ -1,0 +1,30 @@
+@page "/brief"
+
+@* Hidden route — intentionally NOT linked in the nav. Share this URL directly
+   with a client so they can fill out the deeper website-details form. *@
+<PageTitle>Project Brief — @AppConfig.StudioName</PageTitle>
+
+<section class="section">
+    <p class="eyebrow">Let's get specific</p>
+    <h2 class="section-title">Your website brief</h2>
+    <p class="section-lead">
+        Thanks for moving forward! Fill out the details below so I can tailor every
+        pixel to your vision — content, style, pages, and the little touches.
+    </p>
+
+    @if (!string.IsNullOrWhiteSpace(AppConfig.DetailsFormUrl))
+    {
+        <div class="form-embed standalone">
+            <iframe src="@AppConfig.DetailsFormUrl" title="Website details form" loading="lazy">Loading…</iframe>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <p class="form-fallback">
+                The brief form isn't connected yet — paste your Google Form embed URL into
+                <code>AppConfig.DetailsFormUrl</code> (Send → &lt; &gt; → the <code>?embedded=true</code> src).
+            </p>
+        </div>
+    }
+</section>
